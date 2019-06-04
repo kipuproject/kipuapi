@@ -10,9 +10,4 @@ class Reservation extends Model
 
     protected $primaryKey = 'id_reserva';
 
-    public function clients()
-    {
-        $database = 'master';
-        return $this->hasMany('App\User', "$database.user", 'id_usuario', 'id_usuario');
-    }
 }

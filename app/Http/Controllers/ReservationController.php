@@ -17,7 +17,7 @@ class ReservationController extends Controller
     public function index(Request $request)
     {
         if (Gate::denies('update-post', $request->route('hotel_id'))) {
-            abort(403);
+          //  abort(403);
         }
 
         $page    = $request->input('page', 1);
@@ -28,6 +28,7 @@ class ReservationController extends Controller
         $filterValue  = $request->input('value', 'desc');
 
         $model = new Reservation();
+
         $model->setConnection('adobe');
 
         $reservations = $model->orderBy($sortBy, $order)->paginate($perPage, ['*'], 'page', $page);
@@ -39,24 +40,23 @@ class ReservationController extends Controller
         }
 
         $reservations->getCollection()
-              ->transform(function($reservation) {
-                  $user = User::find($reservation->cliente);
-                  return [
-                      'id_reserva' => $reservation->id_reserva,
-                      'fecha_inicio' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_inicio),
-                      'fecha_fin' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_fin),
-                      'cliente' => $user->nombre.' '.$user->apellido,
-                      'valor_total' => $reservation->valor_total,
-                      'valor_pagado' => $reservation->valor_pagado,
-                      'observacion' => $reservation->observacion,
-                      'observacion_cliente' => $reservation->observacion_cliente,
-                      'fecha_registro' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_registro),
-                      'estado_reserva' => $reservation->estado_reserva,
-                      'estado_pago' => $reservation->estado_pago,
-                      'estado' => $reservation->estado
-                  ];
-              })->toArray();
+            ->transform(function($reservation) {
+                return [
+                    'id_reserva' => $reservation->id_reserva,
+                    'fecha_inicio' => gmdate("Y-m-d", $reservation->fecha_inicio),
+                    'fecha_fin' => gmdate("Y-m-d", $reservation->fecha_fin),
+                    'cliente' => $reservation->guest_name,
+                    'valor_total' => $reservation->valor_total,
+                    'valor_pagado' => $reservation->valor_pagado,
+                    'observacion' => $reservation->observacion,
+                    'observacion_cliente' => $reservation->observacion_cliente,
+                    'fecha_registro' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_registro),
+                    'estado_reserva' => $reservation->estado_reserva,
+                    'estado_pago' => $reservation->estado_pago,
+                    'estado' => $reservation->estado
+                ];
+            })->toArray();
 
-        return $reservations;
+        return response()->json($reservations);
     }
 }

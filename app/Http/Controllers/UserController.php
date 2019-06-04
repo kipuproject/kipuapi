@@ -26,7 +26,7 @@ class UserController extends Controller
             $users =  User::where($filterColumn, 'like', '%'. $filterValue . '%')->orderBy($sortBy, $order)->paginate($perPage, ['*'], 'page', $page);
         }
 
-        return $users;
+        return response()->json($users);
     }
 
     /**

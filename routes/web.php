@@ -20,5 +20,5 @@ $router->group(['middleware' => 'jwt-auth'], function($router)
 {
     $router->get('/user', 'UserController@index');
     $router->get('/user/{id}', 'UserController@getUser');
-    $router->get('/reservation/{hotel_id}', 'ReservationController@index');
 });
+    $router->get('/reservation/{hotel_id}', 'ReservationController@index');

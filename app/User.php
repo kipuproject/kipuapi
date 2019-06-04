@@ -16,6 +16,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
 
     protected $table = 'user';
 
+    protected $connection = 'master';
 
     protected $primaryKey = 'id_usuario';
 
@@ -64,4 +65,6 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     {
         return [];
     }
+
+
 }
