@@ -46,23 +46,32 @@ class ReservationController extends Controller
         $reservations->getCollection()
             ->transform(function($reservation) {
                 $roomName = '';
+                $adults   = '';
+                $children  = '';
+                $infants  = '';
                 if(count($reservation->rooms) > 0) { 
                     $roomName = $reservation->rooms[0]->nombre;
+                    $adults   = $reservation->rooms[0]->pivot->adults;
+                    $children  = $reservation->rooms[0]->pivot->children;
+                    $infants  = $reservation->rooms[0]->pivot->infants;
                 }    
                 return [
-                    'id_reserva' => $reservation->id_reserva,
+                    'reservation_id' => $reservation->id_reserva,
                     'room_name' => $roomName,
-                    'fecha_inicio' => gmdate("Y-m-d", $reservation->fecha_inicio),
-                    'fecha_fin' => gmdate("Y-m-d", $reservation->fecha_fin),
-                    'cliente' => $reservation->guest_name,
-                    'valor_total' => $reservation->valor_total,
-                    'valor_pagado' => $reservation->valor_pagado,
-                    'observacion' => $reservation->observacion,
-                    'observacion_cliente' => $reservation->observacion_cliente,
-                    'fecha_registro' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_registro),
-                    'estado_reserva' => $reservation->estado_reserva,
-                    'estado_pago' => $reservation->estado_pago,
-                    'estado' => $reservation->estado
+                    'check_in' => gmdate("Y-m-d", $reservation->fecha_inicio),
+                    'check_out' => gmdate("Y-m-d", $reservation->fecha_fin),
+                    'guest_name' => $reservation->guest_name,
+                    'total' => $reservation->valor_total,
+                    'paid' => $reservation->valor_pagado,
+                    'source' => $reservation->medio,
+                    'adults' => $adults,
+                    'children' => $children,
+                    'infants' => $infants,
+                    'hotel_notes' => $reservation->observacion,
+                    'guest_notes' => $reservation->observacion_cliente,
+                    'created' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_registro),
+                    'status' => $reservation->estado_reserva,
+                    'payment_status' => $reservation->estado_pago
                 ];
             })->toArray();
 

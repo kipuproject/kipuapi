@@ -15,6 +15,11 @@ class Reservation extends Model
      */
     public function rooms()
     {
-        return $this->belongsToMany('App\Room', 'reservation_reservable', 'id_reserva', 'id_reservable');
+        return $this->belongsToMany('App\Room', 'reservation_reservable', 'id_reserva', 'id_reservable')
+                    ->withPivot(
+                            'adults',
+                            'children',
+                            'infants'
+                        );
     }
 }
