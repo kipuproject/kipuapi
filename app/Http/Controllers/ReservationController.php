@@ -29,20 +29,29 @@ class ReservationController extends Controller
 
         $model = new Reservation();
 
-        $model->setConnection('adobe');
+        if($request->route('hotel_id') == 3) { //@TODO
+            DB::setDefaultConnection('adobe');
+        } 
+        if($request->route('hotel_id') == 2) { //@TODO
+            DB::setDefaultConnection('mastranto');
+        }   
 
-        $reservations = $model->orderBy($sortBy, $order)->paginate($perPage, ['*'], 'page', $page);
+        $reservations = $model->with('rooms')->orderBy($sortBy, $order)->paginate($perPage, ['*'], 'page', $page);
 
         if($request->has('column') && $request->has('value')) {
             $reservations = $model->where($filterColumn, 'like', '%'. $filterValue . '%')
                                   ->orderBy($sortBy, $order)
                                   ->paginate($perPage, ['*'], 'page', $page);
         }
-
         $reservations->getCollection()
             ->transform(function($reservation) {
+                $roomName = '';
+                if(count($reservation->rooms) > 0) { 
+                    $roomName = $reservation->rooms[0]->nombre;
+                }    
                 return [
                     'id_reserva' => $reservation->id_reserva,
+                    'room_name' => $roomName,
                     'fecha_inicio' => gmdate("Y-m-d", $reservation->fecha_inicio),
                     'fecha_fin' => gmdate("Y-m-d", $reservation->fecha_fin),
                     'cliente' => $reservation->guest_name,
