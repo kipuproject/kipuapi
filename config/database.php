@@ -22,5 +22,15 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
         ],
+        'mastranto' => [
+            'driver' => 'mysql',
+            'host' => env('HOTEL_MASTRANTO_HOST'),
+            'database' => env('HOTEL_MASTRANTO_DATABASE'),
+            'username' => env('HOTEL_MASTRANTO_USERNAME'),
+            'password' => env('HOTEL_MASTRANTO_PASSWORD'),
+            'prefix' => env('HOTEL_MASTRANTO_PREFIX'),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+        ],
     ]
 ];
