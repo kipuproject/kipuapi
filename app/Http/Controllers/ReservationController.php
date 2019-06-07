@@ -22,7 +22,7 @@ class ReservationController extends Controller
 
         $page    = $request->input('page', 1);
         $perPage = $request->input('perPage', 30);
-        $sortBy  = $request->input('sortBy', 'id_reserva');
+        $sortBy  = $request->input('sortBy', 'fecha_inicio');
         $order   = $request->input('order', 'desc');
         $filterColumn = $request->input('column', 'desc');
         $filterValue  = $request->input('value', 'desc');
@@ -36,13 +36,30 @@ class ReservationController extends Controller
             DB::setDefaultConnection('mastranto');
         }   
 
-        $reservations = $model->with('rooms')->orderBy($sortBy, $order)->paginate($perPage, ['*'], 'page', $page);
+        if($request->has('check_in')) {
+            $filterValue  = explode(",",$request->input('check_in'));
+            $checkinStart = explode("-",$filterValue[0]);
+            $year   = $checkinStart[0];   
+            $month  = $checkinStart[1];
+            $day    = $checkinStart[2];
+            $timeStampStart = mktime(0,0,0,$month,$day,$year);
+            $checkinEnd = explode("-",$filterValue[1]);
+            $year   = $checkinEnd[0];
+            $month  = $checkinEnd[1];
+            $day    = $checkinEnd[2];
+            $timeStampEnd = mktime(0,0,0,$month,$day,$year);
+            $timeStampEnd = $timeStampEnd + 86399;
 
-        if($request->has('column') && $request->has('value')) {
-            $reservations = $model->where($filterColumn, 'like', '%'. $filterValue . '%')
-                                  ->orderBy($sortBy, $order)
-                                  ->paginate($perPage, ['*'], 'page', $page);
+            $model = $model->whereBetween('fecha_inicio', [$timeStampStart, $timeStampEnd]);
         }
+
+        if($request->has('guest_name')) {
+            $model = $model->where('guest_name', 'like', '%'. $request->input('guest_name') . '%');    
+        }
+
+        $reservations = $model->orderBy($sortBy, $order)
+                              ->paginate($perPage, ['*'], 'page', $page);    
+
         $reservations->getCollection()
             ->transform(function($reservation) {
                 $roomName = '';
