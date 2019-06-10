@@ -57,11 +57,15 @@ class ReservationController extends Controller
             $model = $model->where('guest_name', 'like', '%'. $request->input('guest_name') . '%');    
         }
 
-        $reservations = $model->orderBy($sortBy, $order)
-                              ->paginate($perPage, ['*'], 'page', $page);    
+        $reservations = $model->orderBy($sortBy, $order);
 
-        $reservations->getCollection()
-            ->transform(function($reservation) {
+        if(!$request->has('all')) {
+            $reservations = $model->paginate($perPage, ['*'], 'page', $page);
+        } else {
+            $reservations = $model->get();
+        }
+                               
+        $reservations->transform(function($reservation) {
                 $roomName = '';
                 $adults   = '';
                 $children  = '';
