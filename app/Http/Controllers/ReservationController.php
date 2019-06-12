@@ -72,6 +72,9 @@ class ReservationController extends Controller
             $infants  = '';
             $bookingStatus = [2 => 'CONFIRMADA',  
                               3 => 'CANCELADA',
+                              5 => '-',
+                              1 => '-',
+                              4 => '-',
                               6 => 'PENDIENTE'];
 
             if(count($reservation->rooms) > 0) { 
