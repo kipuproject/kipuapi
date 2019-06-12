@@ -21,8 +21,8 @@ class ReservationController extends Controller
         }
 
         $page    = $request->input('page', 1);
-        $perPage = $request->input('perPage', 30);
-        $sortBy  = $request->input('sortBy', 'fecha_inicio');
+        $perPage = $request->input('', 30);
+        $sortBy  = $request->input('sortperPageBy', 'fecha_inicio');
         $order   = $request->input('order', 'desc');
         $filterColumn = $request->input('column', 'desc');
         $filterValue  = $request->input('value', 'desc');
@@ -64,37 +64,42 @@ class ReservationController extends Controller
         } else {
             $reservations = $model->get();
         }
-                               
+
         $reservations->transform(function($reservation) {
-                $roomName = '';
-                $adults   = '';
-                $children  = '';
-                $infants  = '';
-                if(count($reservation->rooms) > 0) { 
-                    $roomName = $reservation->rooms[0]->nombre;
-                    $adults   = $reservation->rooms[0]->pivot->adults;
-                    $children  = $reservation->rooms[0]->pivot->children;
-                    $infants  = $reservation->rooms[0]->pivot->infants;
-                }    
-                return [
-                    'reservation_id' => $reservation->id_reserva,
-                    'room_name' => $roomName,
-                    'check_in' => gmdate("Y-m-d", $reservation->fecha_inicio),
-                    'check_out' => gmdate("Y-m-d", $reservation->fecha_fin),
-                    'guest_name' => $reservation->guest_name,
-                    'total' => $reservation->valor_total,
-                    'paid' => $reservation->valor_pagado,
-                    'source' => $reservation->medio,
-                    'adults' => $adults,
-                    'children' => $children,
-                    'infants' => $infants,
-                    'hotel_notes' => $reservation->observacion,
-                    'guest_notes' => $reservation->observacion_cliente,
-                    'created' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_registro),
-                    'status' => $reservation->estado_reserva,
-                    'payment_status' => $reservation->estado_pago
-                ];
-            })->toArray();
+            $roomName = '';
+            $adults   = '';
+            $children = '';
+            $infants  = '';
+            $bookingStatus = [2 => 'CONFIRMADA',  
+                              3 => 'CANCELADA',
+                              6 => 'PENDIENTE'];
+
+            if(count($reservation->rooms) > 0) { 
+                $roomName = $reservation->rooms[0]->nombre;
+                $adults   = $reservation->rooms[0]->pivot->adults;
+                $children  = $reservation->rooms[0]->pivot->children;
+                $infants  = $reservation->rooms[0]->pivot->infants;
+            }    
+            return [
+                'reservation_id' => $reservation->id_reserva,
+                'room_name' => $roomName,
+                'check_in' => gmdate("Y-m-d", $reservation->fecha_inicio),
+                'check_out' => gmdate("Y-m-d", $reservation->fecha_fin),
+                'guest_name' => $reservation->guest_name,
+                'total' => $reservation->valor_total,
+                'paid' => $reservation->valor_pagado,
+                'balance' => ($reservation->valor_total - $reservation->valor_pagado),
+                'source' => $reservation->medio,
+                'adults' => $adults,
+                'children' => $children,
+                'infants' => $infants,
+                'hotel_notes' => $reservation->observacion,
+                'guest_notes' => $reservation->observacion_cliente,
+                'created' => gmdate("Y-m-d\TH:i:s\Z", $reservation->fecha_registro),
+                'status' => $bookingStatus[$reservation->estado_reserva],
+                'payment_status' => $reservation->estado_pago
+            ];
+        })->toArray();
 
         return response()->json($reservations);
     }
