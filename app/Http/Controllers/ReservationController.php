@@ -67,18 +67,13 @@ class ReservationController extends Controller
             $reservations = $model->get();
         }
 
-        $reservations->transform(function($reservation) {
+        $bookingStatus = config('variable.bookingStatus');
+
+        $reservations->transform(function($reservation) use ($bookingStatus) {
             $roomName = '';
             $adults   = '';
             $children = '';
             $infants  = '';
-            $bookingStatus = [2 => 'CONFIRMADA',  
-                              3 => 'CANCELADA',
-                              5 => '-',
-                              1 => '-',
-                              4 => '-',
-                              6 => 'PENDIENTE'];
-
             if(count($reservation->rooms) > 0) { 
                 $roomName = $reservation->rooms[0]->nombre;
                 $adults   = $reservation->rooms[0]->pivot->adults;
