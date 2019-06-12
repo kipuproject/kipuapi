@@ -24,8 +24,6 @@ class ReservationController extends Controller
         $perPage = $request->input('perPage', 10);
         $sortBy  = $request->input('sortperPageBy', 'fecha_inicio');
         $order   = $request->input('order', 'desc');
-        $filterColumn = $request->input('column', 'desc');
-        $filterValue  = $request->input('value', 'desc');
 
         $model = new Reservation();
 
@@ -56,6 +54,10 @@ class ReservationController extends Controller
         if($request->has('guest_name')) {
             $model = $model->where('guest_name', 'like', '%'. $request->input('guest_name') . '%');    
         }
+
+        if($request->has('status')) {
+            $model = $model->where('estado_reserva', '=', $request->input('status'));    
+        }        
 
         $model = $model->orderBy($sortBy, $order);
 
