@@ -21,7 +21,7 @@ class ReservationController extends Controller
         }
 
         $page    = $request->input('page', 1);
-        $perPage = $request->input('', 30);
+        $perPage = $request->input('perPage', 10);
         $sortBy  = $request->input('sortperPageBy', 'fecha_inicio');
         $order   = $request->input('order', 'desc');
         $filterColumn = $request->input('column', 'desc');
