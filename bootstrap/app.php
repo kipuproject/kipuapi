@@ -97,6 +97,7 @@ $app->singleton(
 */
 
 $app->configure('database');
+$app->configure('variable');
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
