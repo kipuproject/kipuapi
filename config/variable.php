@@ -1,4 +1,6 @@
 <?php
+$recordStatus = [1 => 'ACTIVO',  
+                 0 => 'INACTIVO'];
 
 $bookingStatus = [2 => 'CONFIRMADA',  
                               3 => 'CANCELADA',
@@ -8,5 +10,6 @@ $bookingStatus = [2 => 'CONFIRMADA',
                               6 => 'PENDIENTE'];
 
 return [
+    'recordStatus'  => $recordStatus,
     'bookingStatus' => $bookingStatus
 ];
