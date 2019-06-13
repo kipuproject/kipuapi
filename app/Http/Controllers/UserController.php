@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -32,7 +33,7 @@ class UserController extends Controller
                   });
 
         if($request->has('guest_name')) {
-            $model = $model->where('nombre', 'like', '%'. $request->input('guest_name') . '%');    
+            $model = $model->where(DB::raw('CONCAT(nombre," ",apellido)'), 'like', '%'. $request->input('guest_name') . '%');    
         }
 
         if($request->has('email')) {
