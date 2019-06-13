@@ -39,6 +39,10 @@ class UserController extends Controller
             $model = $model->where('correo', 'like', '%'. $request->input('email') . '%');    
         }
 
+        if($request->has('phone')) {
+            $model = $model->where('telefono', 'like', '%'. $request->input('phone') . '%');    
+        } 
+
         if($request->has('status')) {
             $model = $model->where('estado', '=', $request->input('status'));    
         }  
