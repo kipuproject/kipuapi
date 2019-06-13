@@ -59,6 +59,7 @@ class UserController extends Controller
 
         $users->transform(function($user) use ($recordStatus) {
             return [
+                'id' => $user->id_usuario,
                 'id_number' => $user->identificacion,
                 'id_type' => $user->identificacion,
                 'name' => $user->nombre,
